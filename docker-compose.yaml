@@ -52,7 +52,7 @@ services:
       FIREBASE_AUTH_EMULATOR_HOST: ${FIREBASE_AUTH_EMULATOR_HOST_SERVER:-}
       MARBLE_APP_HOST: ${MARBLE_APP_HOST:-localhost:${HOST_APP_PORT:-3000}}
       # default value of GOOGLE_CLOUD_PROJECT must be kept if working with the emulator (and the emulator is running in the docker image below)
-      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-test-project}
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-}
       GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
       REQUEST_LOGGING_LEVEL: ${REQUEST_LOGGING_LEVEL:-}
       LOGGING_FORMAT: ${LOGGING_FORMAT:-}
@@ -105,7 +105,7 @@ services:
     ports:
       - ${HOST_APP_PORT:-3000}:8080
     environment:
-      ENV: ${ENV:-development}
+      ENV: ${ENV:-production}
       LICENSE_KEY: ${LICENSE_KEY:-LICENSE_KEY}
       NODE_ENV: ${NODE_ENV:-production}
       SESSION_SECRET: ${SESSION_SECRET:-placeholder}
