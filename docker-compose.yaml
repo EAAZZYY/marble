@@ -40,7 +40,7 @@ services:
       - marble-tempfiles:/tempFiles
       - ./marble_gcp_key.json:/shared/marble_gcp_key.json
     environment:
-      ENV: ${ENV:-}
+      ENV: ${ENV:-production}
       PORT: ${API_PORT:-}
       PG_HOSTNAME: ${PG_HOSTNAME:-}
       PG_PORT: ${PG_PORT:-}
@@ -52,13 +52,13 @@ services:
       FIREBASE_AUTH_EMULATOR_HOST: ${FIREBASE_AUTH_EMULATOR_HOST_SERVER:-}
       MARBLE_APP_HOST: ${MARBLE_APP_HOST:-localhost:${HOST_APP_PORT:-3000}}
       # default value of GOOGLE_CLOUD_PROJECT must be kept if working with the emulator (and the emulator is running in the docker image below)
-      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-}
-      GOOGLE_APPLICATION_CREDENTIALS: /shared/marble_gcp_key.json
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-marble-fd}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-/shared/marble_gcp_key.json}
       REQUEST_LOGGING_LEVEL: ${REQUEST_LOGGING_LEVEL:-}
       LOGGING_FORMAT: ${LOGGING_FORMAT:-}
-      CREATE_GLOBAL_ADMIN_EMAIL: ${CREATE_GLOBAL_ADMIN_EMAIL:-}
-      CREATE_ORG_NAME: ${CREATE_ORG_NAME:-}
-      CREATE_ORG_ADMIN_EMAIL: ${CREATE_ORG_ADMIN_EMAIL:-}
+      CREATE_GLOBAL_ADMIN_EMAIL: ${CREATE_GLOBAL_ADMIN_EMAIL:-admin@checkmarble.com}
+      CREATE_ORG_NAME: ${CREATE_ORG_NAME:-Marble}
+      CREATE_ORG_ADMIN_EMAIL: ${CREATE_ORG_ADMIN_EMAIL:-tobiropo@gmail.com}
       FAKE_GCS: ${FAKE_GCS:-}
       SEGMENT_WRITE_KEY: ${SEGMENT_WRITE_KEY_BACKEND:-UgkImFmHmBZAWh5fxIKBY3QtvlcBrhqQ}
       METABASE_SITE_URL: ${METABASE_SITE_URL:-}
@@ -75,7 +75,7 @@ services:
     volumes:
       - marble-tempfiles:/tempFiles
     environment:
-      ENV: ${ENV:-}
+      ENV: ${ENV:-production}
       PG_HOSTNAME: ${PG_HOSTNAME:-}
       PG_PORT: ${PG_PORT:-}
       PG_USER: postgres
@@ -95,7 +95,7 @@ services:
     restart: always
     depends_on:
       - api
-      # - firebase_auth
+      - firebase_auth
     healthcheck:
       test: curl --fail http://localhost:${APP_PORT:-8080}/healthcheck || exit 1
       interval: 10s
@@ -110,9 +110,9 @@ services:
       NODE_ENV: ${NODE_ENV:-production}
       SESSION_SECRET: ${SESSION_SECRET:-placeholder}
       SESSION_MAX_AGE: ${SESSION_MAX_AGE:-43200}
-      MARBLE_API_DOMAIN_CLIENT: http://13.51.159.58:8080
+      MARBLE_API_DOMAIN_CLIENT: ${MARBLE_API_DOMAIN_CLIENT:-http://localhost:8080}
       MARBLE_API_DOMAIN_SERVER: ${MARBLE_API_DOMAIN_SERVER:-http://api:8080}
-      MARBLE_APP_DOMAIN: http://13.51.159.58:${HOST_APP_PORT:-8080}
+      MARBLE_APP_DOMAIN: ${MARBLE_APP_DOMAIN:-http://localhost:${HOST_APP_PORT:-8080}}
       FIREBASE_AUTH_EMULATOR_HOST: ${FIREBASE_AUTH_EMULATOR_HOST_CLIENT:-}
       FIREBASE_API_KEY: ${FIREBASE_API_KEY:-placeholder}
       FIREBASE_AUTH_DOMAIN: ${FIREBASE_AUTH_DOMAIN:-placeholder}
@@ -121,17 +121,15 @@ services:
       FIREBASE_MESSAGING_SENDER_ID: ${FIREBASE_MESSAGING_SENDER_ID:-placeholder}
       FIREBASE_APP_ID: ${FIREBASE_APP_ID:-placeholder}
       SEGMENT_WRITE_KEY: ${SEGMENT_WRITE_KEY:-hC8qrY2OLhUpl1Xycw523tbuClxlQR6u}
-  # firebase_auth:
-  #   container_name: firebase-auth
-  #   image: europe-west1-docker.pkg.dev/marble-infra/marble/firebase-emulator:latest
-  #   restart: always
-  #   ports:
-  #     - ${FIREBASE_AUTH_EMULATOR_PORT:-9099}:9099
-  #     - 4000:4000
+  firebase_auth:
+    container_name: firebase-auth
+    image: europe-west1-docker.pkg.dev/marble-infra/marble/firebase-emulator:latest
+    restart: always
+    ports:
+      - ${FIREBASE_AUTH_EMULATOR_PORT:-9099}:9099
+      - 4000:4000
 
 volumes:
   marble-db:
     driver: local
   marble-tempfiles:
-
-  
