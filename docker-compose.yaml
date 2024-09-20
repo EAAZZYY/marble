@@ -38,7 +38,7 @@ services:
       - ${HOST_API_PORT:-8080}:${API_PORT:-8080}
     volumes:
       - marble-tempfiles:/tempFiles
-      - /key/marble_gcp_key.json:/shared/marble_gcp_key.json
+      - key/:/shared/marble_gcp_key.json
     environment:
       ENV: ${ENV:-production}
       PORT: ${API_PORT:-}
